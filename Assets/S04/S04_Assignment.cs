@@ -17,12 +17,22 @@ public class S04_Assignment : MonoBehaviour
             new Vector3(1f, 0f, 1f), // 5
             new Vector3(1f, 1f, 1f), // 6
             new Vector3(0f, 1f, 1f), // 7
+            new Vector3(0.5f, 1f, 0.5f), //8
+            new Vector3(0.5f, -1f, 0.5f) //9
         };
+
+        int[] triangles = new int[]
+        {
+            
+        };
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+
+        GetComponent<MeshFilter>().mesh = mesh;
+        GetComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
