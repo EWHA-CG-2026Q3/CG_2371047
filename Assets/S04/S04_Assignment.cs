@@ -23,7 +23,14 @@ public class S04_Assignment : MonoBehaviour
 
         int[] triangles = new int[]
         {
-            
+            0,8,1,
+            1,8,5,
+            5,8,4,
+            4,8,0,
+            0,1,9,
+            1,5,9,
+            5,4,9,
+            4,0,9
         };
 
         Mesh mesh = new Mesh();
