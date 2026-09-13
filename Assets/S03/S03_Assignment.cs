@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class S03_Assignment : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -17,11 +18,17 @@ public class S03_Assignment : MonoBehaviour
             new Vector3(0f, 0.5f, 1f), // 7
         };
 
+        int[] triangles = new int[] { 4, 5, 6,
+                                      7, 3, 2};
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+
+        GetComponent<MeshFilter>().mesh = mesh;
+        GetComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
