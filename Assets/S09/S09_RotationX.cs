@@ -20,12 +20,15 @@ public class S09_RotationX : MonoBehaviour
     {
         if (diamondMesh == null || diamondMesh.BaseVertices == null) return;
 
-        float[,] R = RotationXMatrixRaw(angle);
+        float[,] R = ShearMatrixRaw(1.6f);
         Vector3[] baseVertices = diamondMesh.BaseVertices;
         Vector3[] verts = new Vector3[baseVertices.Length];
         for (int i = 0; i < baseVertices.Length; i++)
             verts[i] = FromHomogeneous(MultiplyMatrixVectorRaw(R, ToHomogeneous(baseVertices[i])));
         diamondMesh.SetVertices(verts);
+        diamondMesh.SetVertices(verts);
+
+        Debug.Log("Top Vertex = " + verts[5]);
     }
 
     // 참고: z축 회전 행렬 (e₃는 그대로, e₁과 e₂가 돎)
@@ -48,15 +51,23 @@ public class S09_RotationX : MonoBehaviour
         float rad = angleDegrees * Mathf.Deg2Rad;
         float c = Mathf.Cos(rad);
         float s = Mathf.Sin(rad);
-        // TODO: x축 회전 행렬을 float[4,4]로 반환
-        //       (4열과 4행은 z축 회전과 같음)
-        //       완성하면 아래의 임시 반환(단위행렬)을 지울 것
 
-        return new float[,] {   // 임시: 아무 변환도 하지 않는 단위행렬
-            { 1f, 0f, 0f, 0f },
-            { 0f, 1f, 0f, 0f },
-            { 0f, 0f, 1f, 0f },
-            { 0f, 0f, 0f, 1f }
+        return new float[,] {
+        { 1f, 0f, 0f, 0f },
+        { 0f,  c,  -s, 0f },
+        { 0f,  s,   c, 0f },
+        { 0f, 0f, 0f, 1f }
+    };
+    }
+
+    float[,] ShearMatrixRaw(float k)
+    {
+        return new float[,]
+        {
+        { 1f, k,  0f, 0f }, //학번 끝자리 7 → (7+1)/5 = 1.6
+        { 0f, 1f, 0f, 0f },
+        { 0f, 0f, 1f, 0f },
+        { 0f, 0f, 0f, 1f }
         };
     }
 
