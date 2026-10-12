@@ -64,8 +64,34 @@ public class S11_VirtualCamera_Finish : MonoBehaviour
     {
         Matrix4x4 Tinv = Matrix4x4.Translate(-cam.position);                  // T⁻¹: 이동을 되돌림
         Matrix4x4 Rinv = Matrix4x4.Rotate(Quaternion.Inverse(cam.rotation));  // R⁻¹: 회전을 되돌림
-        return Rinv * Tinv;                                                   // V = R⁻¹ × T⁻¹
+        return MultiplyMatrixMatrix(Rinv, Tinv);                                                   // V = R⁻¹ × T⁻¹
     }
+
+
+    // 과제 4번: 열 단위로 행렬 × 행렬 직접 계산
+    Matrix4x4 MultiplyMatrixMatrix(Matrix4x4 A, Matrix4x4 B)
+    {
+        Matrix4x4 result = Matrix4x4.zero;
+
+        for (int col = 0; col < 4; col++)
+        {
+            // B의 col번째 열을 가져옴
+            Vector4 bColumn = B.GetColumn(col);
+
+            // A의 각 행과 B의 열을 곱해 결과 계산
+            for (int row = 0; row < 4; row++)
+            {
+                result[row, col] =
+                    A[row, 0] * bColumn.x +
+                    A[row, 1] * bColumn.y +
+                    A[row, 2] * bColumn.z +
+                    A[row, 3] * bColumn.w;
+            }
+        }
+
+        return result;
+    }
+
 
     // 카메라(VirtualCamera)가 본 장면을 캔버스에 와이어프레임으로 그림 (매 프레임 호출)
     void DrawSceneOnCanvas()
@@ -78,9 +104,11 @@ public class S11_VirtualCamera_Finish : MonoBehaviour
         {
             if (mf == null || mf.sharedMesh == null) continue;    // 비어 있는 칸은 건너뜀
 
+
             Matrix4x4 VM = V * mf.transform.localToWorldMatrix;   // V × M: 오브젝트를 기준으로 잰 점을 카메라를 기준으로 잰 점으로 바꾸는 행렬 (오브젝트마다 한 번)
             Vector3[] verts = mf.sharedMesh.vertices;             // 오브젝트를 기준으로 잰 정점 배열
             int[] tris = mf.sharedMesh.triangles;                 // 정점 번호를 세 개씩 묶은 삼각형 목록
+
 
             for (int i = 0; i < tris.Length; i += 3)              // 삼각형마다 반복 (번호 세 개씩 건너뜀)
             {
@@ -102,7 +130,7 @@ public class S11_VirtualCamera_Finish : MonoBehaviour
     {
         pixel = Vector2.zero;                                     // 그리지 않을 때 돌려줄 기본값
 
-        if (p.z < near || p.z > far) return false;                // near ~ far 밖(카메라 뒤나 너무 먼 것)은 그리지 않음
+        //if (p.z < near || p.z > far) return false;                // near ~ far 밖(카메라 뒤나 너무 먼 것)은 그리지 않음
 
         float aspect = (float)width / height;                     // 캔버스의 가로세로 비율 (가로 픽셀 ÷ 세로 픽셀)
 
